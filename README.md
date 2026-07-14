@@ -83,8 +83,6 @@ email.SMTPUser = 'email-anda@gmail.com'
 email.SMTPPass = 'app-password-gmail-anda'
 ```
 
-> ⚠️ **Catatan keamanan**: file `.env` pada proyek saat ini masih berisi **kredensial asli** (Midtrans key & App Password Gmail). Sebaiknya kredensial tersebut segera **dicabut/diganti**, dan pastikan `.env` masuk `.gitignore` agar tidak ikut ter-push ke repository publik.
-
 ## Akun Demo
 
 Setelah menjalankan seeder `UserSeeder`, tersedia 3 akun demo berikut:
@@ -98,8 +96,6 @@ Setelah menjalankan seeder `UserSeeder`, tersedia 3 akun demo berikut:
 Login melalui halaman `/login`. Setiap role otomatis diarahkan ke dashboard-nya masing-masing (`/admin/dashboard`, `/staff/dashboard`, atau halaman customer).
 
 ## Screenshot Fitur Utama
-
-> Catatan: screenshot berikut belum bisa dibuat otomatis pada README ini karena membutuhkan aplikasi berjalan langsung (PHP + MySQL + browser). Setelah menjalankan aplikasi sesuai langkah instalasi, tambahkan tangkapan layar Anda ke folder `screenshots/` lalu referensikan seperti contoh berikut:
 
 ```markdown
 ### Halaman Login
