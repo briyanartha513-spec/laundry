@@ -1,69 +1,147 @@
-# CodeIgniter 4 Application Starter
+# Aplikasi Manajemen Laundry
 
-## What is CodeIgniter?
+Aplikasi manajemen laundry berbasis web menggunakan **CodeIgniter 4**, dengan fitur booking layanan, pembayaran online via **Midtrans Snap**, invoice PDF, notifikasi email, dan panel terpisah untuk **Admin**, **Staff**, dan **Customer**.
 
-CodeIgniter is a PHP full-stack web framework that is light, fast, flexible and secure.
-More information can be found at the [official site](https://codeigniter.com).
+## Fitur Utama
 
-This repository holds a composer-installable app starter.
-It has been built from the
-[development repository](https://github.com/codeigniter4/CodeIgniter4).
+- Autentikasi (login, register, lupa password) dengan role: `admin`, `staff`, `customer`
+- **Admin**: kelola layanan (services), kelola & konfirmasi booking, riwayat booking
+- **Staff**: ambil & selesaikan pesanan booking, riwayat pengerjaan
+- **Customer**: buat booking, edit/hapus booking, riwayat, pembayaran, unduh invoice PDF
+- Pembayaran online terintegrasi **Midtrans Snap**
+- Notifikasi email (SMTP)
+- REST API internal dengan proteksi API key (`Api\ServicesApi`, `Api\BookingApi`)
 
-More information about the plans for version 4 can be found in [CodeIgniter 4](https://forum.codeigniter.com/forumdisplay.php?fid=28) on the forums.
+## Persyaratan Sistem
 
-You can read the [user guide](https://codeigniter.com/user_guide/)
-corresponding to the latest version of the framework.
+- PHP >= 8.2, dengan ekstensi: `intl`, `mbstring`, `mysqli`, `json`, `curl`
+- Composer
+- MySQL/MariaDB (mis. via XAMPP)
+- Web server built-in CodeIgniter (`spark serve`) atau Apache/Nginx
 
-## Installation & updates
+## Cara Instalasi
 
-`composer create-project codeigniter4/appstarter` then `composer update` whenever
-there is a new release of the framework.
+1. **Clone / ekstrak proyek**, lalu masuk ke folder proyek:
+   ```bash
+   cd laundry
+   ```
 
-When updating, check the release notes to see if there are any changes you might need to apply
-to your `app` folder. The affected files can be copied or merged from
-`vendor/codeigniter4/framework/app`.
+2. **Install dependency PHP** via Composer:
+   ```bash
+   composer install
+   ```
 
-## Setup
+3. **Buat database** di MySQL (mis. lewat phpMyAdmin), misalnya bernama `uts_laundry`.
 
-Copy `env` to `.env` and tailor for your app, specifically the baseURL
-and any database settings.
+4. **Jalankan migration** untuk membuat tabel (`users`, `services`, `bookings`, `payments`):
+   ```bash
+   php spark migrate
+   ```
 
-## Important Change with index.php
+5. **Jalankan seeder** untuk membuat akun demo (admin, staff, customer):
+   ```bash
+   php spark db:seed UserSeeder
+   ```
 
-`index.php` is no longer in the root of the project! It has been moved inside the *public* folder,
-for better security and separation of components.
+6. **Konfigurasi file `.env`** (lihat bagian [Konfigurasi .env](#konfigurasi-env) di bawah).
 
-This means that you should configure your web server to "point" to your project's *public* folder, and
-not to the project root. A better practice would be to configure a virtual host to point there. A poor practice would be to point your web server to the project root and expect to enter *public/...*, as the rest of your logic and the
-framework are exposed.
+7. **Jalankan server lokal**:
+   ```bash
+   php spark serve
+   ```
+   Aplikasi dapat diakses di `http://localhost:8080`.
 
-**Please** read the user guide for a better explanation of how CI4 works!
+   > Alternatif: jika menggunakan XAMPP, taruh proyek di `htdocs/` lalu arahkan virtual host / browser ke folder `public/`.
 
-## Repository Management
+## Konfigurasi .env
 
-We use GitHub issues, in our main repository, to track **BUGS** and to track approved **DEVELOPMENT** work packages.
-We use our [forum](http://forum.codeigniter.com) to provide SUPPORT and to discuss
-FEATURE REQUESTS.
+Salin file `env` menjadi `.env`, lalu sesuaikan bagian berikut:
 
-This repository is a "distribution" one, built by our release preparation script.
-Problems with it can be raised on our forum, or as issues in the main repository.
+```env
+# Environment
+CI_ENVIRONMENT = development
 
-## Server Requirements
+# App
+app.baseURL = 'http://localhost:8080/'
 
-PHP version 8.2 or higher is required, with the following extensions installed:
+# Database
+database.default.hostname = localhost
+database.default.database = uts_laundry
+database.default.username = root
+database.default.password =
+database.default.DBDriver = MySQLi
+database.default.port = 3306
 
-- [intl](http://php.net/manual/en/intl.requirements.php)
-- [mbstring](http://php.net/manual/en/mbstring.installation.php)
+# Midtrans Payment Gateway (isi dengan Server/Client Key milik akun Sandbox Midtrans Anda sendiri)
+MIDTRANS_SERVER_KEY="Mid-server-xxxxxxxxxxxxxxxxxxxx"
+MIDTRANS_CLIENT_KEY="Mid-client-xxxxxxxxxxxxxxxxxxxx"
+MIDTRANS_IS_PRODUCTION=false
 
-> [!WARNING]
-> - The end of life date for PHP 7.4 was November 28, 2022.
-> - The end of life date for PHP 8.0 was November 26, 2023.
-> - The end of life date for PHP 8.1 was December 31, 2025.
-> - If you are still using below PHP 8.2, you should upgrade immediately.
-> - The end of life date for PHP 8.2 will be December 31, 2026.
+# Email (SMTP, untuk notifikasi & lupa password)
+email.fromEmail = 'email-anda@gmail.com'
+email.SMTPUser = 'email-anda@gmail.com'
+email.SMTPPass = 'app-password-gmail-anda'
+```
 
-Additionally, make sure that the following extensions are enabled in your PHP:
 
-- json (enabled by default - don't turn it off)
-- [mysqlnd](http://php.net/manual/en/mysqlnd.install.php) if you plan to use MySQL
-- [libcurl](http://php.net/manual/en/curl.requirements.php) if you plan to use the HTTP\CURLRequest library
+## Akun Demo
+
+Setelah menjalankan seeder `UserSeeder`, tersedia 3 akun demo berikut:
+
+| Role     | Email             | Password  |
+|----------|-------------------|-----------|
+| Admin    | admin@gmail.com   | admin123  |
+| Staff    | staff@gmail.com   | staff123  |
+| Customer | budi@gmail.com    | budi123   |
+
+Login melalui halaman `/login`. Setiap role otomatis diarahkan ke dashboard-nya masing-masing (`/admin/dashboard`, `/staff/dashboard`, atau halaman customer).
+
+## Screenshot Fitur Utama
+
+```markdown
+### Halaman Login
+![Login](screenshots/login.png)
+
+### Dashboard Admin
+![Dashboard Admin](screenshots/admin-dashboard.png)
+
+### Kelola Layanan (Admin)
+![Kelola Layanan](screenshots/admin-services.png)
+
+### Dashboard Staff
+![Dashboard Staff](screenshots/staff-dashboard.png)
+
+### Booking (Customer)
+![Booking](screenshots/customer-booking.png)
+
+### Pembayaran Midtrans
+![Pembayaran](screenshots/payment.png)
+
+### Invoice PDF
+![Invoice](screenshots/invoice.png)
+```
+
+## Lisensi
+
+The MIT License (MIT)
+
+Copyright (c) 2014-2019 British Columbia Institute of Technology
+Copyright (c) 2019-present CodeIgniter Foundation
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in
+all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+THE SOFTWARE.
