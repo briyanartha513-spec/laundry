@@ -81,7 +81,7 @@ document.addEventListener('click', function (e) {
     if (e.target && e.target.classList.contains('pay-button')) {
         const id = e.target.getAttribute('data-id');
         
-        fetch('<?= site_url('pembayaran/get_token/') ?>' + id)
+        fetch('<?= site_url('bayar/token/') ?>' + id)
         .then(res => res.json())
         .then(data => {
             if(data.token) {

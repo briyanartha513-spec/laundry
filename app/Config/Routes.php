@@ -9,8 +9,10 @@ use CodeIgniter\Router\RouteCollection;
 $routes->get('/', 'Home::index');
 $routes->get('/pembayaran', 'Pembayaran::index');
 
-$routes->get('pembayaran/get_token/(:segment)', 'Pembayaran::get_token/$1');
-$routes->get('pembayaran/success/(:segment)', 'Pembayaran::success/$1');
+// ================================================================
+// 👇 INI RUTE BARU YANG GUE TAMBAHIN BIAR GAK 404 PAS SELESAI BAYAR 👇
+$routes->get('pembayaran/success/(:any)', 'Pembayaran::success/$1');
+// ================================================================
 
 $routes->get('/test-email', 'Home::testEmail');
 
@@ -24,18 +26,18 @@ $routes->get('/forgot-password', function() {
     return view('auth/forgot_password');
 });
 
-
 // ================= ADMIN =================
 $routes->group('admin', ['filter' => 'auth:admin'], function($routes){
-$routes->get('services/delete/(:num)', 'Admin\Services::delete/$1');
-$routes->get('services/edit/(:num)', 'Admin\Services::edit/$1');
-
+    $routes->get('services/delete/(:num)', 'Admin\Services::delete/$1');
+    $routes->get('services/edit/(:num)', 'Admin\Services::edit/$1');
     $routes->get('dashboard', 'Admin\Dashboard::index');
-
+    
     // services
     $routes->get('services', 'Admin\Services::index');
     $routes->get('services/create', 'Admin\Services::create');
+    $routes->post('services/store', 'Admin\Services::store'); 
     $routes->get('services/store', 'Admin\Services::store');
+    $routes->post('services/update/(:num)', 'Admin\Services::update/$1');
     $routes->get('/pembayaran', 'Pembayaran::index');
 
     // bookings
@@ -45,10 +47,8 @@ $routes->get('services/edit/(:num)', 'Admin\Services::edit/$1');
     $routes->get('bookings/cancel/(:num)', 'Admin\Bookings::cancel/$1');
 });
 
-
 // ================= CUSTOMER =================
 $routes->group('customer', ['filter' => 'auth:customer'], function($routes){
-
     $routes->get('booking', 'Customer\Booking::index');
     $routes->post('booking/save', 'Customer\Booking::save'); 
     $routes->get('booking/edit/(:num)', 'Customer\Booking::edit/$1');
@@ -56,10 +56,8 @@ $routes->group('customer', ['filter' => 'auth:customer'], function($routes){
     $routes->get('booking/delete/(:num)', 'Customer\Booking::delete/$1');
     $routes->get('payment/(:num)', 'Customer\Booking::payment/$1');
     $routes->get('history', 'Customer\History::index');
-    $routes->get('/customer/booking/delete/(:num)', 'Customer\Booking::delete/$1');
     $routes->get('booking/invoice/(:num)', 'Customer\Booking::invoice/$1');
 });
-
 
 // ================= STAFF =================
 $routes->group('staff', ['filter' => 'auth:staff'], function($routes) {
@@ -70,13 +68,15 @@ $routes->group('staff', ['filter' => 'auth:staff'], function($routes) {
     $routes->get('booking/history',      'Staff\Booking::history');
 });
 
-
 // ================= API =================
-$routes->group('api', function($routes){
-
+$routes->group('api', ['filter' => 'apikey'], function($routes){ // <-- Filter dipasang di sini
     $routes->get('services', 'Api\ServicesApi::index');
     $routes->get('booking-status/(:num)', 'Api\BookingApi::status/$1');
-
-    // midtrans callback
-    $routes->post('payment/callback', 'Api\PaymentCallback::index');
 });
+$routes->group('bayar', ['filter' => 'auth'], function($routes) {
+    
+    // Tetap pake GET dan (:num) biar sinkron sama Javascript frontend lu
+    $routes->get('token/(:num)', 'Api\PaymentApi::get_token/$1');
+    
+});
+$routes->post('payment/callback', 'Api\PaymentCallback::index');
