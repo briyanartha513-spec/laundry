@@ -83,6 +83,7 @@ email.SMTPUser = 'email-anda@gmail.com'
 email.SMTPPass = 'app-password-gmail-anda'
 ```
 
+> ⚠️ **Catatan keamanan**: file `.env` pada proyek saat ini masih berisi **kredensial asli** (Midtrans key & App Password Gmail). Sebaiknya kredensial tersebut segera **dicabut/diganti**, dan pastikan `.env` masuk `.gitignore` agar tidak ikut ter-push ke repository publik.
 
 ## Akun Demo
 
@@ -97,6 +98,8 @@ Setelah menjalankan seeder `UserSeeder`, tersedia 3 akun demo berikut:
 Login melalui halaman `/login`. Setiap role otomatis diarahkan ke dashboard-nya masing-masing (`/admin/dashboard`, `/staff/dashboard`, atau halaman customer).
 
 ## Screenshot Fitur Utama
+
+> Catatan: screenshot berikut belum bisa dibuat otomatis pada README ini karena membutuhkan aplikasi berjalan langsung (PHP + MySQL + browser). Setelah menjalankan aplikasi sesuai langkah instalasi, tambahkan tangkapan layar Anda ke folder `screenshots/` lalu referensikan seperti contoh berikut:
 
 ```markdown
 ### Halaman Login
@@ -123,25 +126,4 @@ Login melalui halaman `/login`. Setiap role otomatis diarahkan ke dashboard-nya 
 
 ## Lisensi
 
-The MIT License (MIT)
-
-Copyright (c) 2014-2019 British Columbia Institute of Technology
-Copyright (c) 2019-present CodeIgniter Foundation
-
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in
-all copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
-THE SOFTWARE.
+Mengikuti lisensi bawaan proyek (lihat file `LICENSE`).
